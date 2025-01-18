@@ -16,8 +16,14 @@ public class MessageService {
 	public MessageService() {
 		messages.put(1L, new Message(1, "Hello World", "Adithya"));
 		messages.put(2L, new Message(2, "Hello Jersey", "Sekhar"));
+                messages.put(3L, new Message(3, "Hello my name is Santhush. I am from Sri Lanka.", "Santhush"));
+                messages.put(4L, new Message(4, "I am 23 years old.", "Santhush"));
 	}
 	
+        public Message getMessageById(long id) {
+            return messages.get(id);
+        }
+        
 	public List<Message> getAllMessages() {
 		return new ArrayList<Message>(messages.values()); 
 	}

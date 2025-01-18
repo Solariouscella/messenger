@@ -76,6 +76,9 @@ public class Message {
 		link.setRel(rel);
 		links.add(link);
 	}
-    
-	
+        
+        public String getContent() {
+            return message;
+        }
+  	
 }

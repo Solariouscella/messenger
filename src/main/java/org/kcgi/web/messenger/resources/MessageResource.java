@@ -1,6 +1,7 @@
 package org.kcgi.web.messenger.resources;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.ws.rs.BeanParam;
@@ -18,7 +19,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.kcgi.web.messenger.model.Message;
+import org.kcgi.web.messenger.model.TranslationResponse;
 import org.kcgi.web.messenger.resources.beans.MessageFilterBean;
+import org.kcgi.web.messenger.service.GoogleTranslateService;
 import org.kcgi.web.messenger.service.MessageService;
 
 @Path("/messages")
@@ -105,11 +108,48 @@ public class MessageResource {
 	}
 	
 	
-	
-	
 	@Path("/{messageId}/comments")
 	public CommentResource getCommentResource() {
 		return new CommentResource();
 	}
-	
+        
+        @GET
+        @Path("/translate/{targetLang}/{id}")
+        public Response translateMessage(@PathParam("targetLang") String targetLang, @PathParam("id") int id) {
+            // Retrieve the message from the service
+            Message originalMessage = messageService.getMessageById(id);
+            if (originalMessage == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Message not found for ID: " + id)
+                        .build();
+            }
+
+            // Extract the original message content and author
+            String messageContent = originalMessage.getContent();
+            String author = originalMessage.getAuthor();
+
+            // Translate the message
+            try {
+                String translatedMessage = GoogleTranslateService.translateMessage(messageContent, "en", targetLang);
+
+                // Create a response object
+                TranslationResponse response = new TranslationResponse(
+                    originalMessage.getId(),
+                    author,
+                    messageContent,
+                    translatedMessage
+                );
+
+                // Return the response
+                return Response.ok(response)
+                       .header("Content-Type", "application/json; charset=UTF-8")
+                       .build();
+
+            } catch (Exception e) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity("Error occurred during translation: " + e.getMessage())
+                        .build();
+            }
+    
+        }
 }
