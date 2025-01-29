@@ -18,6 +18,7 @@ public class MessageService {
 		messages.put(2L, new Message(2, "Hello Jersey", "Sekhar"));
                 messages.put(3L, new Message(3, "Hello my name is Santhush. I am from Sri Lanka.", "Santhush"));
                 messages.put(4L, new Message(4, "I am 23 years old.", "Santhush"));
+                messages.put(5L, new Message(5, "I am Saranga from Kandy, Sri Lanka", "Saranga"));
 	}
 	
         public Message getMessageById(long id) {
